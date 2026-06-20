@@ -20,7 +20,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Validate JavaScript syntax
         run: |
@@ -31,13 +31,14 @@ jobs:
       - name: Validate HTML
         run: npx --yes htmlhint index.html reports/reports.html settings/settings.html
 
-      - name: Package build artifact
-        run: |
-          mkdir -p dist
-          zip -r dist/daily-accounting-app.zip index.html css js reports settings README.md
-
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: daily-accounting-app
-          path: dist/daily-accounting-app.zip
+          path: |
+            index.html
+            css
+            js
+            reports
+            settings
+            README.md
