@@ -119,8 +119,8 @@
                     <option value="categories">إجمالي التصنيفات</option>
                     <option value="movements">حركة الحسابات</option>
                 </select>
-                <input type="date" id="date-from" placeholder="من">
-                <input type="date" id="date-to" placeholder="إلى">
+                <input type="date" id="date-from" placeholder="من" onchange="generateReport()">
+                <input type="date" id="date-to" placeholder="إلى" onchange="generateReport()">
                 <button onclick="generateReport()" class="btn-save">توليد التقرير</button>
                 <button onclick="exportReport()" class="btn-cancel">تصدير</button>
             </div>
@@ -133,38 +133,49 @@
 
     <script src="../js/app.js"></script>
     <script>
+        function getDateFilteredAccounts() {
+            const from = document.getElementById('date-from').value;
+            const to = document.getElementById('date-to').value;
+            return accounts.filter(acc => {
+                if (from && acc.date < from) return false;
+                if (to && acc.date > to) return false;
+                return true;
+            });
+        }
+
         function generateReport() {
             const reportType = document.getElementById('report-type').value;
             const content = document.getElementById('report-content');
-            
+            const data = getDateFilteredAccounts();
+
             let html = '';
-            
+
             switch(reportType) {
                 case 'total':
-                    html = generateTotalReport();
+                    html = generateTotalReport(data);
                     break;
                 case 'details':
-                    html = generateDetailsReport();
+                    html = generateDetailsReport(data);
                     break;
                 case 'monthly':
-                    html = generateMonthlyReport();
+                    html = generateMonthlyReport(data);
                     break;
                 case 'categories':
-                    html = generateCategoriesReport();
+                    html = generateCategoriesReport(data);
                     break;
                 case 'movements':
-                    html = generateMovementsReport();
+                    html = generateMovementsReport(data);
                     break;
             }
             
             content.innerHTML = html;
         }
         
-        function generateTotalReport() {
+        function generateTotalReport(data) {
             let totalIncome = 0;
             let totalExpense = 0;
             
-            accounts.forEach(acc => {
+            data.forEach(acc => {
                 if (acc.type === 'income') {
                     totalIncome += acc.amount;
                 } else {
@@ -178,26 +189,26 @@
                     <div class="stat-grid">
                         <div class="stat-item">
                             <div class="label">إجمالي الدخل</div>
-                            <div class="value" style="color: #4caf50">${totalIncome.toLocaleString()}</div>
+                            <div class="value" style="color: #4caf50">${formatAmount(totalIncome)}</div>
                         </div>
                         <div class="stat-item">
                             <div class="label">إجمالي المصروفات</div>
-                            <div class="value" style="color: #f44336">${totalExpense.toLocaleString()}</div>
+                            <div class="value" style="color: #f44336">${formatAmount(totalExpense)}</div>
                         </div>
                         <div class="stat-item">
                             <div class="label">الرصيد</div>
-                            <div class="value">${(totalIncome - totalExpense).toLocaleString()}</div>
+                            <div class="value">${formatAmount(totalIncome - totalExpense)}</div>
                         </div>
                         <div class="stat-item">
                             <div class="label">عدد المعاملات</div>
-                            <div class="value">${accounts.length}</div>
+                            <div class="value">${data.length}</div>
                         </div>
                     </div>
                 </div>
             `;
         }
         
-        function generateDetailsReport() {
+        function generateDetailsReport(data) {
             let html = `
                 <div class="report-card">
                     <h3>تفاصيل جميع المعاملات</h3>
@@ -215,15 +226,15 @@
                         <tbody>
             `;
             
-            accounts.forEach(acc => {
+            data.forEach(acc => {
                 html += `
                     <tr>
-                        <td>${acc.name}</td>
-                        <td>${acc.amount.toLocaleString()}</td>
+                        <td>${escapeHtml(acc.name)}</td>
+                        <td>${formatAmount(acc.amount)}</td>
                         <td>${acc.type === 'income' ? 'دخل' : 'مصروف'}</td>
-                        <td>${acc.category}</td>
+                        <td>${escapeHtml(getCategoryLabel(acc.category))}</td>
                         <td>${acc.date}</td>
-                        <td>${acc.notes || '-'}</td>
+                        <td>${escapeHtml(acc.notes) || '-'}</td>
                     </tr>
                 `;
             });
@@ -237,10 +248,10 @@
             return html;
         }
         
-        function generateMonthlyReport() {
+        function generateMonthlyReport(data) {
             const monthlyData = {};
             
-            accounts.forEach(acc => {
+            data.forEach(acc => {
                 const month = acc.date.substring(0, 7); // YYYY-MM
                 if (!monthlyData[month]) {
                     monthlyData[month] = { income: 0, expense: 0 };
@@ -273,9 +284,9 @@
                 html += `
                     <tr>
                         <td>${month}</td>
-                        <td style="color: #4caf50">${data.income.toLocaleString()}</td>
-                        <td style="color: #f44336">${data.expense.toLocaleString()}</td>
-                        <td>${balance.toLocaleString()}</td>
+                        <td style="color: #4caf50">${formatAmount(data.income)}</td>
+                        <td style="color: #f44336">${formatAmount(data.expense)}</td>
+                        <td>${formatAmount(balance)}</td>
                     </tr>
                 `;
             });
@@ -289,10 +300,10 @@
             return html;
         }
         
-        function generateCategoriesReport() {
+        function generateCategoriesReport(data) {
             const categoryData = {};
             
-            accounts.forEach(acc => {
+            data.forEach(acc => {
                 if (!categoryData[acc.category]) {
                     categoryData[acc.category] = { income: 0, expense: 0 };
                 }
@@ -310,14 +321,14 @@
             `;
             
             Object.keys(categoryData).forEach(category => {
-                const data = categoryData[category];
-                const total = data.income - data.expense;
+                const catData = categoryData[category];
+                const total = catData.income - catData.expense;
                 html += `
                     <div class="stat-item">
-                        <div class="label">${category}</div>
-                        <div class="value">${total.toLocaleString()}</div>
+                        <div class="label">${escapeHtml(getCategoryLabel(category))}</div>
+                        <div class="value">${formatAmount(total)}</div>
                         <div style="font-size: 12px; color: #757575">
-                            دخل: ${data.income} | مصروف: ${data.expense}
+                            دخل: ${formatAmount(catData.income)} | مصروف: ${formatAmount(catData.expense)}
                         </div>
                     </div>
                 `;
@@ -331,7 +342,7 @@
             return html;
         }
         
-        function generateMovementsReport() {
+        function generateMovementsReport(data) {
             let html = `
                 <div class="report-card">
                     <h3>حركة الحسابات</h3>
@@ -349,7 +360,7 @@
             `;
             
             let balance = 0;
-            const sortedAccounts = [...accounts].sort((a, b) => new Date(a.date) - new Date(b.date));
+            const sortedAccounts = [...data].sort((a, b) => new Date(a.date) - new Date(b.date));
             
             sortedAccounts.forEach(acc => {
                 if (acc.type === 'income') {
@@ -361,10 +372,10 @@
                 html += `
                     <tr>
                         <td>${acc.date}</td>
-                        <td>${acc.name}</td>
-                        <td>${acc.type === 'expense' ? acc.amount.toLocaleString() : '-'}</td>
-                        <td>${acc.type === 'income' ? acc.amount.toLocaleString() : '-'}</td>
-                        <td>${balance.toLocaleString()}</td>
+                        <td>${escapeHtml(acc.name)}</td>
+                        <td>${acc.type === 'expense' ? formatAmount(acc.amount) : '-'}</td>
+                        <td>${acc.type === 'income' ? formatAmount(acc.amount) : '-'}</td>
+                        <td>${formatAmount(balance)}</td>
                     </tr>
                 `;
             });

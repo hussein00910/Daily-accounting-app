@@ -24,6 +24,8 @@
             <li onclick="showAutoRepeat()"><i class="fas fa-sync-alt"></i> التكرار التلقائي</li>
             <li onclick="backupData()"><i class="fas fa-upload"></i> حفظ نسخة إحتياطية</li>
             <li onclick="restoreData()"><i class="fas fa-download"></i> إسترجاع قاعدة البيانات</li>
+            <li onclick="exportToCSV()"><i class="fas fa-file-csv"></i> تصدير CSV</li>
+            <li onclick="printReport()"><i class="fas fa-print"></i> طباعة</li>
             <li onclick="syncWithGoogleDrive()"><i class="fab fa-google-drive"></i> جوجل درايف</li>
             <li onclick="navigateTo('settings/settings.html')"><i class="fas fa-cog"></i> إعدادات</li>
             <li onclick="showContactSupport()"><i class="fas fa-phone"></i> للتواصل والدعم</li>
@@ -46,8 +48,26 @@
         </div>
     </header>
 
+    <!-- شريط البحث -->
+    <div id="search-bar" class="search-bar" style="display: none;">
+        <input type="text" id="search-input" placeholder="بحث بالاسم أو الملاحظات...">
+        <button onclick="closeSearch()"><i class="fas fa-times"></i></button>
+    </div>
+
     <!-- المحتوى الرئيسي -->
     <main class="main-content">
+        <div class="toolbar">
+            <div class="filter-bar">
+                <button class="filter-btn active" data-filter="all">الكل</button>
+                <button class="filter-btn" data-filter="expense">مصروف</button>
+                <button class="filter-btn" data-filter="income">دخل</button>
+            </div>
+            <select id="sort-select">
+                <option value="date">الأحدث</option>
+                <option value="name">الاسم</option>
+                <option value="amount">المبلغ</option>
+            </select>
+        </div>
         <div id="accounts-list" class="accounts-list">
             <!-- سيتم ملؤها ديناميكياً -->
         </div>

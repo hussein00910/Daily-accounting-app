@@ -372,12 +372,42 @@
         
         // إدارة التصنيفات
         function manageCategories() {
-            alert('يمكنك إضافة وتعديل التصنيفات من هنا');
+            const custom = getCustomCategories();
+            const currentList = custom.length ? custom.join('، ') : 'لا توجد تصنيفات مخصصة';
+            const action = prompt(
+                `التصنيفات المخصصة الحالية:\n${currentList}\n\n` +
+                'لإضافة تصنيف جديد، اكتب اسمه فقط.\n' +
+                'لحذف تصنيف، اكتب: حذف:اسم التصنيف'
+            );
+            if (!action) return;
+
+            if (action.startsWith('حذف:')) {
+                const name = action.slice(4).trim();
+                const index = custom.indexOf(name);
+                if (index > -1) {
+                    custom.splice(index, 1);
+                    localStorage.setItem('customCategories', JSON.stringify(custom));
+                    alert('تم حذف التصنيف بنجاح');
+                } else {
+                    alert('هذا التصنيف غير موجود');
+                }
+                return;
+            }
+
+            const name = action.trim();
+            if (!name) return;
+            if (custom.includes(name)) {
+                alert('هذا التصنيف موجود مسبقاً');
+                return;
+            }
+            custom.push(name);
+            localStorage.setItem('customCategories', JSON.stringify(custom));
+            alert('تمت إضافة التصنيف بنجاح');
         }
         
         // اختيار العملة
         function selectCurrency() {
-            const currencies = ['ريال سعودي', 'درهم إماراتي', 'دينار كويتي', 'دولار أمريكي', 'يورو'];
+            const currencies = Object.keys(CURRENCY_SYMBOLS);
             const selected = prompt('اختر العملة:\n' + currencies.join('\n'));
             if (selected && currencies.includes(selected)) {
                 document.getElementById('current-currency').textContent = selected;
