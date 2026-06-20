@@ -17,7 +17,9 @@
             android:background="@drawable/bg_card"
             android:hint="@string/company_name"
             android:inputType="text"
-            android:padding="12dp" />
+            android:padding="12dp"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary" />
 
         <EditText
             android:id="@+id/etCompanyAddress"
@@ -27,7 +29,9 @@
             android:background="@drawable/bg_card"
             android:hint="@string/company_address"
             android:inputType="text"
-            android:padding="12dp" />
+            android:padding="12dp"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary" />
 
         <EditText
             android:id="@+id/etCompanyPhone"
@@ -37,7 +41,9 @@
             android:background="@drawable/bg_card"
             android:hint="@string/company_phone"
             android:inputType="phone"
-            android:padding="12dp" />
+            android:padding="12dp"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary" />
 
         <EditText
             android:id="@+id/etTaxNumber"
@@ -47,7 +53,9 @@
             android:background="@drawable/bg_card"
             android:hint="@string/tax_number"
             android:inputType="text"
-            android:padding="12dp" />
+            android:padding="12dp"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary" />
 
         <EditText
             android:id="@+id/etCurrency"
@@ -57,7 +65,9 @@
             android:background="@drawable/bg_card"
             android:hint="@string/currency"
             android:inputType="text"
-            android:padding="12dp" />
+            android:padding="12dp"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/switchAutoBackup"

@@ -35,26 +35,20 @@
                 android:textColor="@color/text_secondary"
                 android:textSize="13sp" />
 
-            <Spinner
-                android:id="@+id/spinnerItem"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <EditText
-                android:id="@+id/etQuantity"
+            <LinearLayout
+                android:id="@+id/layoutItemLines"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:hint="@string/quantity"
-                android:inputType="numberDecimal" />
+                android:orientation="vertical" />
 
-            <EditText
-                android:id="@+id/etPrice"
+            <Button
+                android:id="@+id/btnAddLine"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:hint="@string/price"
-                android:inputType="numberDecimal" />
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_button_primary"
+                android:text="@string/add_item_line"
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/tvComputedTotal"

@@ -128,6 +128,9 @@
     <string name="select_item">اختر الصنف</string>
     <string name="select_customer">اختر العميل</string>
     <string name="select_supplier">اختر المورد</string>
+    <string name="add_item_line">+ إضافة صنف آخر</string>
+    <string name="remove_line">حذف الصنف</string>
+    <string name="at_least_one_item">يجب إضافة صنف واحد على الأقل</string>
     <string name="no_sales_yet">لا توجد مبيعات بعد</string>
     <string name="no_purchases_yet">لا توجد مشتريات بعد</string>
     <string name="no_cash_transactions">لا توجد حركات صندوق بعد</string>
@@ -182,6 +185,16 @@
     <string name="restore_success">تمت الاستعادة بنجاح</string>
     <string name="restore_failed">فشلت الاستعادة</string>
     <string name="quantity_updated">تم تحديث الكمية</string>
+
+    <!-- Currencies -->
+    <string name="currencies">العملات</string>
+    <string name="add_currency_entry">إضافة عملة</string>
+    <string name="edit_currency">تعديل عملة</string>
+    <string name="currency_name">اسم العملة</string>
+    <string name="currency_symbol">رمز العملة</string>
+    <string name="currency_rate">سعر التحويل</string>
+    <string name="default_currency">العملة الافتراضية</string>
+    <string name="delete_currency_confirm">هل تريد حذف هذه العملة؟</string>
 
     <!-- Generic -->
     <string name="coming_soon">قريباً</string>

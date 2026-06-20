@@ -18,6 +18,7 @@ import com.mohaseb.soft.data.entity.Customer
 import com.mohaseb.soft.data.entity.Item
 import com.mohaseb.soft.databinding.DialogAddTransactionBinding
 import com.mohaseb.soft.databinding.FragmentPurchasesBinding
+import com.mohaseb.soft.databinding.ItemInvoiceLineBinding
 import com.mohaseb.soft.ui.adapters.TransactionAdapter
 import java.util.Locale
 
@@ -60,60 +61,100 @@ class PurchasesFragment : Fragment() {
     private fun showAddPurchaseDialog() {
         if (accounts.isEmpty() || items.isEmpty()) return
         val dialogBinding = DialogAddTransactionBinding.inflate(layoutInflater)
+        val lineBindings = mutableListOf<ItemInvoiceLineBinding>()
 
         dialogBinding.spinnerAccount.adapter = ArrayAdapter(
             requireContext(), android.R.layout.simple_spinner_dropdown_item, accounts.map { it.name }
-        )
-        dialogBinding.spinnerItem.adapter = ArrayAdapter(
-            requireContext(), android.R.layout.simple_spinner_dropdown_item, items.map { it.name }
         )
         val supplierNames = listOf(getString(R.string.none)) + suppliers.map { it.name }
         dialogBinding.spinnerCustomer.adapter = ArrayAdapter(
             requireContext(), android.R.layout.simple_spinner_dropdown_item, supplierNames
         )
         dialogBinding.tvCustomerLabel.text = getString(R.string.select_supplier)
-        dialogBinding.etQuantity.setText("1")
-        dialogBinding.etPrice.setText(String.format(Locale.US, "%.2f", items[0].purchasePrice))
 
-        fun updateTotal() {
-            val qty = dialogBinding.etQuantity.text.toString().toDoubleOrNull() ?: 0.0
-            val price = dialogBinding.etPrice.text.toString().toDoubleOrNull() ?: 0.0
-            dialogBinding.tvComputedTotal.text =
-                "${getString(R.string.total)}: ${String.format(Locale.US, "%.2f", qty * price)}"
-        }
-        updateTotal()
-
-        dialogBinding.spinnerItem.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                dialogBinding.etPrice.setText(String.format(Locale.US, "%.2f", items[position].purchasePrice))
-                updateTotal()
+        fun updateGrandTotal() {
+            val grandTotal = lineBindings.sumOf { line ->
+                val qty = line.etQuantity.text.toString().toDoubleOrNull() ?: 0.0
+                val price = line.etPrice.text.toString().toDoubleOrNull() ?: 0.0
+                qty * price
             }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            dialogBinding.tvComputedTotal.text =
+                "${getString(R.string.total)}: ${String.format(Locale.US, "%.2f", grandTotal)}"
         }
 
-        val watcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = updateTotal()
-            override fun afterTextChanged(s: Editable?) {}
+        fun updateLineTotal(lineBinding: ItemInvoiceLineBinding) {
+            val qty = lineBinding.etQuantity.text.toString().toDoubleOrNull() ?: 0.0
+            val price = lineBinding.etPrice.text.toString().toDoubleOrNull() ?: 0.0
+            lineBinding.tvLineTotal.text =
+                "${getString(R.string.total)}: ${String.format(Locale.US, "%.2f", qty * price)}"
+            updateGrandTotal()
         }
-        dialogBinding.etQuantity.addTextChangedListener(watcher)
-        dialogBinding.etPrice.addTextChangedListener(watcher)
+
+        fun addLine() {
+            val lineBinding = ItemInvoiceLineBinding.inflate(
+                layoutInflater, dialogBinding.layoutItemLines, false
+            )
+            lineBinding.spinnerItem.adapter = ArrayAdapter(
+                requireContext(), android.R.layout.simple_spinner_dropdown_item, items.map { it.name }
+            )
+            lineBinding.etQuantity.setText("1")
+            lineBinding.etPrice.setText(String.format(Locale.US, "%.2f", items[0].purchasePrice))
+
+            lineBinding.spinnerItem.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    lineBinding.etPrice.setText(String.format(Locale.US, "%.2f", items[position].purchasePrice))
+                    updateLineTotal(lineBinding)
+                }
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
+
+            val watcher = object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) =
+                    updateLineTotal(lineBinding)
+                override fun afterTextChanged(s: Editable?) {}
+            }
+            lineBinding.etQuantity.addTextChangedListener(watcher)
+            lineBinding.etPrice.addTextChangedListener(watcher)
+
+            lineBinding.btnRemoveLine.setOnClickListener {
+                if (lineBindings.size <= 1) return@setOnClickListener
+                lineBindings.remove(lineBinding)
+                dialogBinding.layoutItemLines.removeView(lineBinding.root)
+                updateGrandTotal()
+            }
+
+            lineBindings.add(lineBinding)
+            dialogBinding.layoutItemLines.addView(lineBinding.root)
+            updateLineTotal(lineBinding)
+        }
+
+        addLine()
+        dialogBinding.btnAddLine.setOnClickListener { addLine() }
 
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.add_purchase)
             .setView(dialogBinding.root)
             .setPositiveButton(R.string.save) { _, _ ->
                 val accountPos = dialogBinding.spinnerAccount.selectedItemPosition
-                val itemPos = dialogBinding.spinnerItem.selectedItemPosition
-                if (accountPos < 0 || itemPos < 0) return@setPositiveButton
+                if (accountPos < 0) return@setPositiveButton
                 val supplierPos = dialogBinding.spinnerCustomer.selectedItemPosition
                 val supplierId = if (supplierPos > 0) suppliers[supplierPos - 1].id else null
 
+                val lines = lineBindings.mapNotNull { line ->
+                    val itemPos = line.spinnerItem.selectedItemPosition
+                    if (itemPos < 0) return@mapNotNull null
+                    InvoiceLine(
+                        itemId = items[itemPos].id,
+                        quantity = line.etQuantity.text.toString().toDoubleOrNull() ?: 1.0,
+                        price = line.etPrice.text.toString().toDoubleOrNull() ?: 0.0
+                    )
+                }
+                if (lines.isEmpty()) return@setPositiveButton
+
                 viewModel.addPurchase(
                     accountId = accounts[accountPos].id,
-                    itemId = items[itemPos].id,
-                    quantity = dialogBinding.etQuantity.text.toString().toDoubleOrNull() ?: 1.0,
-                    price = dialogBinding.etPrice.text.toString().toDoubleOrNull() ?: 0.0,
+                    lines = lines,
                     supplierId = supplierId,
                     isCredit = dialogBinding.switchCredit.isChecked,
                     notes = dialogBinding.etNotes.text.toString()

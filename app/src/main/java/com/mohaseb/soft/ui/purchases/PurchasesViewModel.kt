@@ -9,6 +9,12 @@ import com.mohaseb.soft.data.entity.Transaction
 import com.mohaseb.soft.utils.Constants
 import kotlinx.coroutines.launch
 
+data class InvoiceLine(
+    val itemId: Long,
+    val quantity: Double,
+    val price: Double
+)
+
 class PurchasesViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = (application as MohasebApp).repository
 
@@ -19,32 +25,36 @@ class PurchasesViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun addPurchase(
         accountId: Long,
-        itemId: Long,
-        quantity: Double,
-        price: Double,
+        lines: List<InvoiceLine>,
         supplierId: Long?,
         isCredit: Boolean,
         notes: String
     ) {
         viewModelScope.launch {
-            val amount = quantity * price
-            repository.insertTransaction(
-                Transaction(
-                    accountId = accountId,
-                    type = Constants.TYPE_PURCHASE,
-                    amount = amount,
-                    quantity = quantity,
-                    price = price,
-                    itemId = itemId,
-                    customerId = supplierId,
-                    isCredit = isCredit,
-                    notes = notes
+            val invoiceId = System.currentTimeMillis()
+            var totalAmount = 0.0
+            for (line in lines) {
+                val amount = line.quantity * line.price
+                totalAmount += amount
+                repository.insertTransaction(
+                    Transaction(
+                        accountId = accountId,
+                        type = Constants.TYPE_PURCHASE,
+                        amount = amount,
+                        quantity = line.quantity,
+                        price = line.price,
+                        itemId = line.itemId,
+                        customerId = supplierId,
+                        isCredit = isCredit,
+                        notes = notes,
+                        invoiceId = invoiceId
+                    )
                 )
-            )
-            repository.updateQuantity(itemId, quantity)
-            repository.updateAccountBalance(accountId, -amount)
+                repository.updateQuantity(line.itemId, line.quantity)
+            }
+            repository.updateAccountBalance(accountId, -totalAmount)
             if (isCredit && supplierId != null) {
-                repository.updateBalance(supplierId, amount)
+                repository.updateBalance(supplierId, totalAmount)
             }
         }
     }

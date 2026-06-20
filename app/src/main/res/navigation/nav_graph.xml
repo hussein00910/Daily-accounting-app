@@ -18,6 +18,7 @@
         <action android:id="@+id/action_home_to_items" app:destination="@id/itemsFragment" />
         <action android:id="@+id/action_home_to_reports" app:destination="@id/reportsFragment" />
         <action android:id="@+id/action_home_to_settings" app:destination="@id/settingsFragment" />
+        <action android:id="@+id/action_home_to_currencies" app:destination="@id/currenciesFragment" />
     </fragment>
 
     <fragment
@@ -67,5 +68,11 @@
         android:name="com.mohaseb.soft.ui.settings.SettingsFragment"
         android:label="@string/settings"
         tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/currenciesFragment"
+        android:name="com.mohaseb.soft.ui.currencies.CurrenciesFragment"
+        android:label="@string/currencies"
+        tools:layout="@layout/fragment_currencies" />
 
 </navigation>

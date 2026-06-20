@@ -84,8 +84,8 @@ class HomeFragment : Fragment() {
         binding.btnPurchaseOrder.setOnClickListener { showComingSoon() }
 
         // Currencies
-        binding.btnAddCurrency.setOnClickListener { showComingSoon() }
-        binding.btnCurrencyRates.setOnClickListener { showComingSoon() }
+        binding.btnAddCurrency.setOnClickListener { findNavController().navigate(R.id.action_home_to_currencies) }
+        binding.btnCurrencyRates.setOnClickListener { findNavController().navigate(R.id.action_home_to_currencies) }
         binding.btnAccountLimit.setOnClickListener { showComingSoon() }
 
         // Reports

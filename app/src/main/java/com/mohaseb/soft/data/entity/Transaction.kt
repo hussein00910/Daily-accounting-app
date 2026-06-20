@@ -19,5 +19,6 @@ data class Transaction(
     val isCredit: Boolean = false,
     val warehouseId: Long? = null,
     val taxAmount: Double = 0.0,
-    val discount: Double = 0.0
+    val discount: Double = 0.0,
+    val invoiceId: Long = 0
 )
