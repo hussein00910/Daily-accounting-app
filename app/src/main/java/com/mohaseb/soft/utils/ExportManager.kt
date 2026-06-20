@@ -20,7 +20,7 @@ class ExportManager(private val context: Context) {
 
         val file = File(exportDir, "$fileName.csv")
         val sb = StringBuilder()
-        sb.append('﻿')
+        sb.append("\uFEFF")
         sb.append("التاريخ,النوع,الحساب,الكمية,السعر,الإجمالي,ملاحظات\n")
         transactions.forEach { t ->
             sb.append("${dateFormat.format(Date(t.date))},${t.type},${t.accountId},${t.quantity},${t.price},${t.amount},${t.notes}\n")
@@ -59,7 +59,7 @@ class ExportManager(private val context: Context) {
 
         val file = File(exportDir, "$fileName.csv")
         val sb = StringBuilder()
-        sb.append('﻿')
+        sb.append("\uFEFF")
 
         sb.append("الحسابات\nالاسم,النوع,الرصيد,ملاحظات\n")
         accounts.forEach { a -> sb.append("${a.name},${a.type},${a.balance},${a.notes}\n") }
