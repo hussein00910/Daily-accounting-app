@@ -593,3 +593,89 @@ body {
         padding: 0;
     }
 }
+
+/* نافذة التواصل والدعم */
+.contact-modal-content {
+    max-width: 380px;
+}
+
+.contact-options {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.contact-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--bg-color, #f5f5f5);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text-color, #333);
+    font-size: 16px;
+    direction: ltr;
+    justify-content: flex-end;
+}
+
+.contact-option i {
+    color: #3f51b5;
+    font-size: 20px;
+}
+
+/* قفل التطبيق */
+.app-lock-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--card-bg, #fff);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.app-lock-box {
+    text-align: center;
+    padding: 30px;
+    width: 100%;
+    max-width: 320px;
+}
+
+.app-lock-box i.fa-lock {
+    font-size: 48px;
+    color: #3f51b5;
+    margin-bottom: 15px;
+}
+
+.app-lock-box h2 {
+    margin-bottom: 8px;
+}
+
+.app-lock-box p {
+    color: #757575;
+    margin-bottom: 20px;
+}
+
+.app-lock-box input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 10px;
+    letter-spacing: 4px;
+}
+
+.app-lock-error {
+    color: #f44336;
+    min-height: 20px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.app-lock-box button {
+    width: 100%;
+}

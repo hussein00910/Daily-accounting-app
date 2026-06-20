@@ -345,6 +345,26 @@
         
         // تبديل الإعداد
         function toggleSetting(key) {
+            if (key === 'app-lock') {
+                if (settings['app-lock']) {
+                    if (!confirm('هل تريد تعطيل قفل التطبيق؟')) return;
+                    settings['app-lock'] = false;
+                    localStorage.removeItem('appLockPin');
+                    sessionStorage.removeItem('appUnlocked');
+                    saveSettings();
+                    updateToggles();
+                } else {
+                    setAppLockPin().then(success => {
+                        if (success) {
+                            settings['app-lock'] = true;
+                            saveSettings();
+                            updateToggles();
+                            alert('تم تفعيل قفل التطبيق بنجاح');
+                        }
+                    });
+                }
+                return;
+            }
             settings[key] = !settings[key];
             saveSettings();
             updateToggles();
@@ -360,14 +380,25 @@
         }
         
         // تغيير كلمة المرور
-        function changePassword() {
-            const oldPass = prompt('أدخل كلمة المرور الحالية:');
-            if (oldPass !== null) {
-                const newPass = prompt('أدخل كلمة المرور الجديدة:');
-                if (newPass) {
-                    alert('تم تغيير كلمة المرور بنجاح');
-                }
+        async function changePassword() {
+            if (!localStorage.getItem('appLockPin')) {
+                alert('فعّل "قفل التطبيق" أولاً من خيارات الأمان قبل تغيير كلمة المرور');
+                return;
             }
+            const oldPass = prompt('أدخل كلمة المرور الحالية:');
+            if (oldPass === null) return;
+            if (await hashPin(oldPass) !== localStorage.getItem('appLockPin')) {
+                alert('كلمة المرور الحالية غير صحيحة');
+                return;
+            }
+            const newPass = prompt('أدخل كلمة المرور الجديدة:');
+            if (!newPass) return;
+            if (newPass.length < 4) {
+                alert('كلمة المرور يجب أن تكون 4 أحرف على الأقل');
+                return;
+            }
+            localStorage.setItem('appLockPin', await hashPin(newPass));
+            alert('تم تغيير كلمة المرور بنجاح');
         }
         
         // إدارة التصنيفات

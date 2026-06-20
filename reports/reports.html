@@ -6,6 +6,8 @@
     <title>التقارير - المحاسب</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         .report-header {
             background: white;
@@ -97,6 +99,21 @@
         table tr:hover {
             background: #f9f9f9;
         }
+
+        @media print {
+            .header,
+            .report-filters {
+                display: none !important;
+            }
+
+            .report-header h2 {
+                margin: 0 0 10px;
+            }
+
+            .main-content {
+                padding: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -122,7 +139,9 @@
                 <input type="date" id="date-from" placeholder="من" onchange="generateReport()">
                 <input type="date" id="date-to" placeholder="إلى" onchange="generateReport()">
                 <button onclick="generateReport()" class="btn-save">توليد التقرير</button>
-                <button onclick="exportReport()" class="btn-cancel">تصدير</button>
+                <button onclick="exportReport()" class="btn-cancel">تصدير نص</button>
+                <button onclick="exportReportPDF()" class="btn-cancel">تصدير PDF</button>
+                <button onclick="printReportPage()" class="btn-cancel"><i class="fas fa-print"></i> طباعة</button>
             </div>
         </div>
 
@@ -188,11 +207,11 @@
                     <h3>الإجمالي العام</h3>
                     <div class="stat-grid">
                         <div class="stat-item">
-                            <div class="label">إجمالي الدخل</div>
+                            <div class="label">له</div>
                             <div class="value" style="color: #4caf50">${formatAmount(totalIncome)}</div>
                         </div>
                         <div class="stat-item">
-                            <div class="label">إجمالي المصروفات</div>
+                            <div class="label">عليه</div>
                             <div class="value" style="color: #f44336">${formatAmount(totalExpense)}</div>
                         </div>
                         <div class="stat-item">
@@ -231,7 +250,7 @@
                     <tr>
                         <td>${escapeHtml(acc.name)}</td>
                         <td>${formatAmount(acc.amount)}</td>
-                        <td>${acc.type === 'income' ? 'دخل' : 'مصروف'}</td>
+                        <td>${acc.type === 'income' ? 'له' : 'عليه'}</td>
                         <td>${escapeHtml(getCategoryLabel(acc.category))}</td>
                         <td>${acc.date}</td>
                         <td>${escapeHtml(acc.notes) || '-'}</td>
@@ -270,8 +289,8 @@
                         <thead>
                             <tr>
                                 <th>الشهر</th>
-                                <th>الدخل</th>
-                                <th>المصروفات</th>
+                                <th>له</th>
+                                <th>عليه</th>
                                 <th>الرصيد</th>
                             </tr>
                         </thead>
@@ -328,7 +347,7 @@
                         <div class="label">${escapeHtml(getCategoryLabel(category))}</div>
                         <div class="value">${formatAmount(total)}</div>
                         <div style="font-size: 12px; color: #757575">
-                            دخل: ${formatAmount(catData.income)} | مصروف: ${formatAmount(catData.expense)}
+                            له: ${formatAmount(catData.income)} | عليه: ${formatAmount(catData.expense)}
                         </div>
                     </div>
                 `;
@@ -396,6 +415,61 @@
             link.href = URL.createObjectURL(blob);
             link.download = `report_${new Date().toISOString().split('T')[0]}.txt`;
             link.click();
+        }
+
+        function printReportPage() {
+            window.print();
+        }
+
+        async function exportReportPDF() {
+            const content = document.getElementById('report-content');
+            if (!content.innerHTML.trim()) {
+                generateReport();
+            }
+
+            const canvas = await html2canvas(content, { scale: 2, useCORS: true });
+            const imgData = canvas.toDataURL('image/png');
+
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+            const imgWidth = pageWidth;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            while (heightLeft > 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+
+            const fileName = `report_${new Date().toISOString().split('T')[0]}.pdf`;
+
+            if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+                const pdfBase64 = pdf.output('datauristring').split(',')[1];
+                const { Filesystem } = window.Capacitor.Plugins;
+                const { Share } = window.Capacitor.Plugins;
+                const result = await Filesystem.writeFile({
+                    path: fileName,
+                    data: pdfBase64,
+                    directory: 'CACHE'
+                });
+                await Share.share({
+                    title: 'تقرير',
+                    text: 'تقرير المحاسب',
+                    url: result.uri,
+                    dialogTitle: 'مشاركة التقرير'
+                });
+            } else {
+                pdf.save(fileName);
+            }
         }
         
         // توليد التقرير عند التحميل

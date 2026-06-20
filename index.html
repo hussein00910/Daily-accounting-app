@@ -15,7 +15,7 @@
             <button class="close-btn" onclick="toggleSidebar()">×</button>
         </div>
         <ul class="menu">
-            <li onclick="addAmount()"><i class="fas fa-plus-circle"></i> إضافة مبلغ</li>
+            <li onclick="addAmount()"><i class="fas fa-plus-circle"></i> حساب جديد</li>
             <li onclick="navigateTo('reports/reports.html')"><i class="fas fa-chart-bar"></i> تقرير- إجمالي المبالغ</li>
             <li onclick="navigateTo('reports/reports.html')"><i class="fas fa-list"></i> تقرير- تفاصيل كل المبالغ</li>
             <li onclick="navigateTo('reports/reports.html')"><i class="fas fa-calendar-alt"></i> تقرير- إجمالي المبالغ شهرياً</li>
@@ -26,7 +26,7 @@
             <li onclick="restoreData()"><i class="fas fa-download"></i> إسترجاع قاعدة البيانات</li>
             <li onclick="exportToCSV()"><i class="fas fa-file-csv"></i> تصدير CSV</li>
             <li onclick="printReport()"><i class="fas fa-print"></i> طباعة</li>
-            <li onclick="syncWithGoogleDrive()"><i class="fab fa-google-drive"></i> جوجل درايف</li>
+            <li onclick="syncWithGoogleDrive()"><i class="fab fa-google-drive"></i> مشاركة/رفع للسحابة</li>
             <li onclick="navigateTo('settings/settings.html')"><i class="fas fa-cog"></i> إعدادات</li>
             <li onclick="showContactSupport()"><i class="fas fa-phone"></i> للتواصل والدعم</li>
             <li onclick="showAbout()"><i class="fas fa-question-circle"></i> حول البرنامج</li>
@@ -59,8 +59,8 @@
         <div class="toolbar">
             <div class="filter-bar">
                 <button class="filter-btn active" data-filter="all">الكل</button>
-                <button class="filter-btn" data-filter="expense">مصروف</button>
-                <button class="filter-btn" data-filter="income">دخل</button>
+                <button class="filter-btn" data-filter="expense">عليه</button>
+                <button class="filter-btn" data-filter="income">له</button>
             </div>
             <select id="sort-select">
                 <option value="date">الأحدث</option>
@@ -104,8 +104,8 @@
                 <div class="form-group">
                     <label>النوع</label>
                     <select id="account-type">
-                        <option value="expense">مصروف (عليك)</option>
-                        <option value="income">دخل (لك)</option>
+                        <option value="expense">عليه</option>
+                        <option value="income">له</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -132,6 +132,26 @@
                     <button type="submit" class="btn-save">حفظ</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- نافذة التواصل والدعم -->
+    <div id="contact-modal" class="modal">
+        <div class="modal-content contact-modal-content">
+            <div class="modal-header">
+                <h3>التواصل والدعم</h3>
+                <button class="close-modal" onclick="closeContactModal()">×</button>
+            </div>
+            <div class="contact-options">
+                <a href="tel:0504808561" class="contact-option">
+                    <i class="fas fa-phone"></i>
+                    <span>0504808561</span>
+                </a>
+                <a href="mailto:bintalebb2024@gmail.com" class="contact-option">
+                    <i class="fas fa-envelope"></i>
+                    <span>bintalebb2024@gmail.com</span>
+                </a>
+            </div>
         </div>
     </div>
 

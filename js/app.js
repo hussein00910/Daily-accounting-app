@@ -24,8 +24,14 @@ const CURRENCY_SYMBOLS = {
     'يورو': '€'
 };
 
+// إخفاء المحتوى فوراً إذا كان قفل التطبيق مفعلاً، لتفادي ظهوره للحظة قبل طلب كلمة المرور
+if (isAppLockEnabled() && sessionStorage.getItem('appUnlocked') !== 'true') {
+    document.documentElement.style.visibility = 'hidden';
+}
+
 // تحميل البيانات عند بدء التطبيق
 document.addEventListener('DOMContentLoaded', function() {
+    initAppLock();
     loadData();
 
     if (document.getElementById('account-category')) {
@@ -353,40 +359,90 @@ function addAmount() {
     toggleSidebar();
 }
 
-// النسخ الإحتياطي
-function backupData() {
-    const dataStr = JSON.stringify(accounts, null, 2);
-    const dataBlob = new Blob([dataStr], {type: 'application/json'});
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `backup_${new Date().toISOString().split('T')[0]}.json`;
-    link.click();
+// مفاتيح localStorage التي تمثل قاعدة بيانات التطبيق الكاملة
+const BACKUP_KEYS = ['accountingData', 'appSettings', 'customCategories', 'currency', 'userName', 'appLockPin'];
+
+// بناء ملف نسخة احتياطية كامل (بصيغة قاعدة بيانات منظمة، لا مصفوفة حسابات فقط)
+function buildBackupPayload() {
+    const data = {};
+    BACKUP_KEYS.forEach(key => {
+        const value = localStorage.getItem(key);
+        if (value !== null) data[key] = value;
+    });
+    return {
+        app: 'daily-accounting-app',
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        data
+    };
+}
+
+// تطبيق نسخة احتياطية محفوظة على قاعدة البيانات المحلية
+function applyBackupPayload(parsed) {
+    if (Array.isArray(parsed)) {
+        // نسخة قديمة: مصفوفة حسابات فقط
+        localStorage.setItem('accountingData', JSON.stringify(parsed));
+        return;
+    }
+    if (!parsed || typeof parsed !== 'object' || !parsed.data || typeof parsed.data !== 'object') {
+        throw new Error('invalid backup file');
+    }
+    Object.keys(parsed.data).forEach(key => {
+        if (BACKUP_KEYS.includes(key)) {
+            localStorage.setItem(key, parsed.data[key]);
+        }
+    });
+}
+
+// النسخ الإحتياطي (حفظ محلي، أو مشاركة/رفع للسحابة عبر قائمة المشاركة في الجهاز)
+async function backupData() {
+    const json = JSON.stringify(buildBackupPayload(), null, 2);
+    const fileName = `accounting_backup_${new Date().toISOString().split('T')[0]}.json`;
+
+    if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+        try {
+            const { uri } = await window.Capacitor.Plugins.Filesystem.writeFile({
+                path: fileName,
+                data: json,
+                directory: 'CACHE',
+                encoding: 'utf8'
+            });
+            await window.Capacitor.Plugins.Share.share({
+                title: 'نسخة احتياطية - المحاسب',
+                text: 'نسخة احتياطية من بيانات تطبيق المحاسب',
+                url: uri,
+                dialogTitle: 'حفظ النسخة الاحتياطية أو مشاركتها على السحابة'
+            });
+        } catch (err) {
+            alert('حدث خطأ أثناء إنشاء النسخة الاحتياطية: ' + (err && err.message ? err.message : err));
+        }
+    } else {
+        const blob = new Blob([json], { type: 'application/json' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName;
+        link.click();
+    }
     toggleSidebar();
 }
 
-// استرجاع البيانات
+// استرجاع البيانات من نسخة احتياطية
 function restoreData() {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.json';
+    input.accept = '.json,application/json';
     input.onchange = function(e) {
         const file = e.target.files[0];
+        if (!file) return;
         const reader = new FileReader();
         reader.onload = function(event) {
             try {
-                const data = JSON.parse(event.target.result);
-                if (Array.isArray(data)) {
-                    accounts = data;
-                    saveData();
-                    renderAccounts();
-                    updateSummary();
-                    alert('تم استرجاع البيانات بنجاح');
-                } else {
-                    alert('ملف غير صالح');
-                }
+                const parsed = JSON.parse(event.target.result);
+                applyBackupPayload(parsed);
+                alert('تم استرجاع البيانات بنجاح');
+                location.reload();
             } catch (error) {
-                alert('حدث خطأ في قراءة الملف');
+                alert('حدث خطأ في قراءة الملف، أو أن الملف غير صالح');
             }
         };
         reader.readAsText(file);
@@ -395,10 +451,9 @@ function restoreData() {
     toggleSidebar();
 }
 
-// المزامنة مع Google Drive
+// رفع نسخة احتياطية للسحابة (يفتح قائمة مشاركة الجهاز لاختيار جوجل درايف أو أي تطبيق آخر)
 function syncWithGoogleDrive() {
-    alert('خاصية المزامنة مع Google Drive تتطلب إعداد API');
-    toggleSidebar();
+    backupData();
 }
 
 // التكرار التلقائي
@@ -446,8 +501,19 @@ function showSettings() {
 
 // التواصل والدعم
 function showContactSupport() {
-    alert('للتواصل والدعم:\nالبريد الإلكتروني: support@accounting.app\nالهاتف: 123456789');
+    const modal = document.getElementById('contact-modal');
+    if (modal) {
+        modal.classList.add('active');
+    }
     toggleSidebar();
+}
+
+// إغلاق نافذة التواصل والدعم
+function closeContactModal() {
+    const modal = document.getElementById('contact-modal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
 }
 
 // حول البرنامج
@@ -495,7 +561,7 @@ function exportToCSV() {
         csv += [
             escapeCsvValue(account.name),
             escapeCsvValue(account.amount),
-            escapeCsvValue(account.type === 'income' ? 'دخل' : 'مصروف'),
+            escapeCsvValue(account.type === 'income' ? 'له' : 'عليه'),
             escapeCsvValue(getCategoryLabel(account.category)),
             escapeCsvValue(account.date),
             escapeCsvValue(account.notes)
@@ -588,4 +654,89 @@ function formatAmount(amount) {
     const symbol = getCurrencySymbol();
     const formatted = Number(amount).toLocaleString();
     return symbol ? `${formatted} ${symbol}` : formatted;
+}
+
+// ===== قفل التطبيق =====
+
+// تجزئة كلمة المرور بحيث لا تُخزن كنص صريح في localStorage
+async function hashPin(pin) {
+    const data = new TextEncoder().encode(pin);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// هل قفل التطبيق مفعّل وله كلمة مرور محفوظة؟
+function isAppLockEnabled() {
+    try {
+        const settings = JSON.parse(localStorage.getItem('appSettings') || '{}');
+        return !!settings['app-lock'] && !!localStorage.getItem('appLockPin');
+    } catch (e) {
+        return false;
+    }
+}
+
+// تهيئة قفل التطبيق عند بدء كل صفحة
+function initAppLock() {
+    if (!isAppLockEnabled() || sessionStorage.getItem('appUnlocked') === 'true') {
+        document.documentElement.style.visibility = 'visible';
+        return;
+    }
+    showLockScreen();
+}
+
+// عرض شاشة قفل التطبيق وانتظار كلمة المرور الصحيحة
+function showLockScreen() {
+    const overlay = document.createElement('div');
+    overlay.className = 'app-lock-overlay';
+    overlay.innerHTML = `
+        <div class="app-lock-box">
+            <i class="fas fa-lock"></i>
+            <h2>التطبيق مقفل</h2>
+            <p>أدخل كلمة المرور للمتابعة</p>
+            <input type="password" id="app-lock-input" inputmode="numeric" autocomplete="off">
+            <div class="app-lock-error" id="app-lock-error"></div>
+            <button type="button" id="app-lock-submit" class="btn-save">فتح</button>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+    document.documentElement.style.visibility = 'visible';
+
+    const input = overlay.querySelector('#app-lock-input');
+    const errorEl = overlay.querySelector('#app-lock-error');
+    input.focus();
+
+    async function tryUnlock() {
+        const hash = await hashPin(input.value);
+        if (hash === localStorage.getItem('appLockPin')) {
+            sessionStorage.setItem('appUnlocked', 'true');
+            overlay.remove();
+        } else {
+            errorEl.textContent = 'كلمة مرور غير صحيحة';
+            input.value = '';
+            input.focus();
+        }
+    }
+
+    overlay.querySelector('#app-lock-submit').addEventListener('click', tryUnlock);
+    input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') tryUnlock();
+    });
+}
+
+// تعيين كلمة مرور جديدة لقفل التطبيق (تُستخدم عند التفعيل من الإعدادات)
+async function setAppLockPin() {
+    const pin = prompt('أدخل كلمة مرور لقفل التطبيق (4 أحرف على الأقل):');
+    if (!pin) return false;
+    if (pin.length < 4) {
+        alert('كلمة المرور يجب أن تكون 4 أحرف على الأقل');
+        return false;
+    }
+    const confirmPin = prompt('أعد إدخال كلمة المرور للتأكيد:');
+    if (pin !== confirmPin) {
+        alert('كلمتا المرور غير متطابقتين');
+        return false;
+    }
+    localStorage.setItem('appLockPin', await hashPin(pin));
+    sessionStorage.setItem('appUnlocked', 'true');
+    return true;
 }
