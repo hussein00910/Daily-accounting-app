@@ -27,13 +27,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     init {
         viewModelScope.launch {
             val current = repository.getSettings().first()
-            if (current == null) {
-                val default = Settings()
-                repository.insertSettings(default)
-                _settings.value = default
-            } else {
-                _settings.value = current
-            }
+            val resolved = current ?: Settings().also { repository.insertSettings(it) }
+            _settings.value = resolved
         }
     }
 
