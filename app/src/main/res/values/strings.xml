@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">محاسب سوفت</string>
+
+    <!-- Bottom navigation / main screens -->
+    <string name="home">الرئيسية</string>
+    <string name="sales">المبيعات</string>
+    <string name="purchases">المشتريات</string>
+    <string name="cash">الصندوق</string>
+    <string name="warehouse">المخزون</string>
+    <string name="accounts">الحسابات</string>
+    <string name="items">الأصناف</string>
+    <string name="reports">التقارير</string>
+    <string name="settings">الإعدادات</string>
+
+    <!-- Home summary -->
+    <string name="total_debit">عليك: %.0f</string>
+    <string name="total_credit">لك: %.0f</string>
+    <string name="total_debt">إجمالي المدين</string>
+    <string name="total_credit_label">إجمالي الدائن</string>
+
+    <!-- Home section headers -->
+    <string name="section_warehouse_ops">عمليات المخزون</string>
+    <string name="section_entries">القيود والحسابات</string>
+    <string name="section_items">الأصناف والأسعار</string>
+    <string name="section_currencies">العملات</string>
+    <string name="section_reports">تقارير أخرى</string>
+
+    <!-- Warehouse operations rows -->
+    <string name="warehouse_out">صرف مخزني</string>
+    <string name="warehouse_in">توريد مخزني</string>
+    <string name="warehouse_transfer">تحويل بين المخازن</string>
+    <string name="warehouse_adjust">تسوية المخزون</string>
+    <string name="add_warehouse">إضافة مخزن</string>
+    <string name="warehouse_inventory">جرد المخزون</string>
+
+    <!-- Entries and accounts rows -->
+    <string name="daily_entry">قيد يومية</string>
+    <string name="opening_entry">قيد افتتاحي</string>
+    <string name="add_account_entry">إضافة حساب</string>
+    <string name="cash_movement">حركة الصندوق</string>
+    <string name="chart_of_accounts">دليل الحسابات</string>
+    <string name="yearly_close">إقفال سنوي</string>
+
+    <!-- Items and prices rows -->
+    <string name="items_list">قائمة الأصناف</string>
+    <string name="sale_prices">أسعار البيع</string>
+    <string name="item_units">وحدات القياس</string>
+    <string name="price_quote">عرض سعر</string>
+    <string name="purchase_order">أمر شراء</string>
+
+    <!-- Currencies rows -->
+    <string name="add_currency">إضافة عملة</string>
+    <string name="currency_rates">أسعار العملات</string>
+    <string name="account_limit">حدود الحساب</string>
+
+    <!-- Other reports rows -->
+    <string name="item_movement">حركة الأصناف</string>
+    <string name="trial_balance">ميزان المراجعة</string>
+    <string name="income_statement">قائمة الدخل</string>
+    <string name="balance_sheet">المركز المالي</string>
+    <string name="other_reports">تقارير أخرى</string>
+
+    <!-- Generic actions and labels -->
+    <string name="add">إضافة</string>
+    <string name="save">حفظ</string>
+    <string name="cancel">إلغاء</string>
+    <string name="delete">حذف</string>
+    <string name="edit">تعديل</string>
+    <string name="search">بحث</string>
+    <string name="name">الاسم</string>
+    <string name="amount">المبلغ</string>
+    <string name="quantity">الكمية</string>
+    <string name="price">السعر</string>
+    <string name="total">الإجمالي</string>
+    <string name="date">التاريخ</string>
+    <string name="notes">ملاحظات</string>
+    <string name="customer">عميل</string>
+    <string name="supplier">مورد</string>
+    <string name="item">الصنف</string>
+    <string name="category">التصنيف</string>
+    <string name="type">النوع</string>
+    <string name="debit">مدين</string>
+    <string name="credit">دائن</string>
+    <string name="yes">نعم</string>
+    <string name="no">لا</string>
+    <string name="confirm">تأكيد</string>
+    <string name="backup">نسخ احتياطي</string>
+    <string name="restore">استعادة</string>
+    <string name="export">تصدير</string>
+    <string name="import_data">استيراد البيانات</string>
+    <string name="personal_data">البيانات الشخصية</string>
+    <string name="print_options">خيارات الطباعة</string>
+    <string name="security_options">خيارات الأمان</string>
+    <string name="users_and_permissions">المستخدمون والصلاحيات</string>
+    <string name="categories">التصنيفات</string>
+    <string name="item_group">مجموعة الأصناف</string>
+    <string name="units">وحدات القياس</string>
+    <string name="data_save_options">خيارات حفظ البيانات</string>
+    <string name="thermal_printer">طابعة حرارية</string>
+    <string name="tax">الضريبة</string>
+    <string name="barcode_print">طباعة الباركود</string>
+    <string name="notification_options">خيارات الإشعارات</string>
+    <string name="other_options">خيارات أخرى</string>
+    <string name="activate_subscription">تفعيل الاشتراك</string>
+    <string name="about">حول التطبيق</string>
+    <string name="contact_support">التواصل مع الدعم</string>
+    <string name="logout">تسجيل الخروج</string>
+    <string name="main_warehouse">المخزن الرئيسي</string>
+    <string name="credit_sale">بيع آجل</string>
+    <string name="cash_sale">بيع نقدي</string>
+    <string name="credit_purchase">شراء آجل</string>
+    <string name="cash_purchase">شراء نقدي</string>
+    <string name="receipt_voucher">سند قبض</string>
+    <string name="payment_voucher">سند دفع</string>
+    <string name="no_results">لا توجد نتائج</string>
+    <string name="required">هذا الحقل مطلوب</string>
+    <string name="save_confirm">تم الحفظ بنجاح</string>
+    <string name="local">محلي</string>
+    <string name="dollar">دولار</string>
+
+    <!-- Sales / Purchases / Cash dialogs -->
+    <string name="add_sale">إضافة فاتورة بيع</string>
+    <string name="add_purchase">إضافة فاتورة شراء</string>
+    <string name="add_receipt">سند قبض</string>
+    <string name="add_payment">سند دفع</string>
+    <string name="select_account">اختر الحساب</string>
+    <string name="select_item">اختر الصنف</string>
+    <string name="select_customer">اختر العميل</string>
+    <string name="select_supplier">اختر المورد</string>
+    <string name="no_sales_yet">لا توجد مبيعات بعد</string>
+    <string name="no_purchases_yet">لا توجد مشتريات بعد</string>
+    <string name="no_cash_transactions">لا توجد حركات صندوق بعد</string>
+    <string name="account">الحساب</string>
+    <string name="balance">الرصيد</string>
+    <string name="cash_in">قبض</string>
+    <string name="cash_out">دفع</string>
+    <string name="credit_switch">آجل</string>
+
+    <!-- Warehouse -->
+    <string name="low_stock_warning">كمية منخفضة</string>
+    <string name="adjust_quantity">تسوية الكمية</string>
+    <string name="new_quantity">الكمية الجديدة</string>
+
+    <!-- Accounts -->
+    <string name="add_account">إضافة حساب</string>
+    <string name="edit_account">تعديل حساب</string>
+    <string name="delete_account_confirm">هل تريد حذف هذا الحساب؟</string>
+
+    <!-- Items -->
+    <string name="add_item">إضافة صنف</string>
+    <string name="edit_item">تعديل صنف</string>
+    <string name="delete_item_confirm">هل تريد حذف هذا الصنف؟</string>
+    <string name="search_items_hint">بحث عن صنف...</string>
+    <string name="unit">الوحدة</string>
+    <string name="code">الكود</string>
+    <string name="barcode">الباركود</string>
+    <string name="min_quantity">الحد الأدنى للكمية</string>
+    <string name="purchase_price">سعر الشراء</string>
+    <string name="sale_price">سعر البيع</string>
+
+    <!-- Reports -->
+    <string name="total_sales">إجمالي المبيعات</string>
+    <string name="total_purchases">إجمالي المشتريات</string>
+    <string name="total_cash_in">إجمالي القبض</string>
+    <string name="total_cash_out">إجمالي الدفع</string>
+    <string name="net_balance">الرصيد الصافي</string>
+    <string name="export_pdf">تصدير PDF</string>
+    <string name="export_csv">تصدير CSV</string>
+
+    <!-- Settings -->
+    <string name="company_name">اسم الشركة</string>
+    <string name="company_address">عنوان الشركة</string>
+    <string name="company_phone">هاتف الشركة</string>
+    <string name="tax_number">الرقم الضريبي</string>
+    <string name="currency">العملة</string>
+    <string name="auto_backup">نسخ احتياطي تلقائي</string>
+    <string name="backup_now">نسخ احتياطي الآن</string>
+    <string name="restore_backup">استعادة نسخة احتياطية</string>
+    <string name="backup_success">تم النسخ الاحتياطي بنجاح</string>
+    <string name="backup_failed">فشل النسخ الاحتياطي</string>
+    <string name="restore_success">تمت الاستعادة بنجاح</string>
+    <string name="restore_failed">فشلت الاستعادة</string>
+    <string name="quantity_updated">تم تحديث الكمية</string>
+
+    <!-- Generic -->
+    <string name="coming_soon">قريباً</string>
+    <string name="none">بدون</string>
+</resources>
