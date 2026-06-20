@@ -3,8 +3,8 @@ package com.mohaseb.soft.ui.items
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.mohaseb.soft.MohasebApp
 import com.mohaseb.soft.data.entity.Item
@@ -15,8 +15,8 @@ class ItemsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val query = MutableLiveData("")
 
-    val items = Transformations.switchMap(query) { q ->
-        if (q.isNullOrBlank()) repository.getAllItems().asLiveData()
+    val items = query.switchMap { q ->
+        if (q.isBlank()) repository.getAllItems().asLiveData()
         else repository.searchItems(q).asLiveData()
     }
 
