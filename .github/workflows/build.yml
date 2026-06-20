@@ -1,0 +1,43 @@
+name: Build and Validate
+
+on:
+  push:
+    branches:
+      - main
+      - 'claude/**'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate JavaScript syntax
+        run: |
+          set -e
+          find . -name "*.js" -not -path "./node_modules/*" -print0 \
+            | xargs -0 -n1 node --check
+
+      - name: Validate HTML
+        run: npx --yes htmlhint index.html reports/reports.html settings/settings.html
+
+      - name: Package build artifact
+        run: |
+          mkdir -p dist
+          zip -r dist/daily-accounting-app.zip index.html css js reports settings README.md
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-accounting-app
+          path: dist/daily-accounting-app.zip

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التقارير - المحاسب</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .report-header {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .report-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .report-filters select,
+        .report-filters input {
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+        
+        .report-card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .report-card h3 {
+            margin-bottom: 15px;
+            color: #3f51b5;
+        }
+        
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .stat-item {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-item .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3f51b5;
+            margin: 10px 0;
+        }
+        
+        .stat-item .label {
+            color: #757575;
+            font-size: 14px;
+        }
+        
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        table th,
+        table td {
+            padding: 12px;
+            text-align: right;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+        
+        table tr:hover {
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <button class="menu-btn" onclick="window.location.href='../index.html'">
+            <i class="fas fa-arrow-right"></i>
+        </button>
+        <h1>التقارير</h1>
+        <div style="width: 40px;"></div>
+    </header>
+
+    <main class="main-content">
+        <div class="report-header">
+            <h2>تقرير شامل</h2>
+            <div class="report-filters">
+                <select id="report-type" onchange="generateReport()">
+                    <option value="total">إجمالي المبالغ</option>
+                    <option value="details">تفاصيل كل المبالغ</option>
+                    <option value="monthly">إجمالي المبالغ شهرياً</option>
+                    <option value="categories">إجمالي التصنيفات</option>
+                    <option value="movements">حركة الحسابات</option>
+                </select>
+                <input type="date" id="date-from" placeholder="من">
+                <input type="date" id="date-to" placeholder="إلى">
+                <button onclick="generateReport()" class="btn-save">توليد التقرير</button>
+                <button onclick="exportReport()" class="btn-cancel">تصدير</button>
+            </div>
+        </div>
+
+        <div id="report-content">
+            <!-- سيتم ملؤه ديناميكياً -->
+        </div>
+    </main>
+
+    <script src="../js/app.js"></script>
+    <script>
+        function generateReport() {
+            const reportType = document.getElementById('report-type').value;
+            const content = document.getElementById('report-content');
+            
+            let html = '';
+            
+            switch(reportType) {
+                case 'total':
+                    html = generateTotalReport();
+                    break;
+                case 'details':
+                    html = generateDetailsReport();
+                    break;
+                case 'monthly':
+                    html = generateMonthlyReport();
+                    break;
+                case 'categories':
+                    html = generateCategoriesReport();
+                    break;
+                case 'movements':
+                    html = generateMovementsReport();
+                    break;
+            }
+            
+            content.innerHTML = html;
+        }
+        
+        function generateTotalReport() {
+            let totalIncome = 0;
+            let totalExpense = 0;
+            
+            accounts.forEach(acc => {
+                if (acc.type === 'income') {
+                    totalIncome += acc.amount;
+                } else {
+                    totalExpense += acc.amount;
+                }
+            });
+            
+            return `
+                <div class="report-card">
+                    <h3>الإجمالي العام</h3>
+                    <div class="stat-grid">
+                        <div class="stat-item">
+                            <div class="label">إجمالي الدخل</div>
+                            <div class="value" style="color: #4caf50">${totalIncome.toLocaleString()}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="label">إجمالي المصروفات</div>
+                            <div class="value" style="color: #f44336">${totalExpense.toLocaleString()}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="label">الرصيد</div>
+                            <div class="value">${(totalIncome - totalExpense).toLocaleString()}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="label">عدد المعاملات</div>
+                            <div class="value">${accounts.length}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function generateDetailsReport() {
+            let html = `
+                <div class="report-card">
+                    <h3>تفاصيل جميع المعاملات</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>الاسم</th>
+                                <th>المبلغ</th>
+                                <th>النوع</th>
+                                <th>التصنيف</th>
+                                <th>التاريخ</th>
+                                <th>ملاحظات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            accounts.forEach(acc => {
+                html += `
+                    <tr>
+                        <td>${acc.name}</td>
+                        <td>${acc.amount.toLocaleString()}</td>
+                        <td>${acc.type === 'income' ? 'دخل' : 'مصروف'}</td>
+                        <td>${acc.category}</td>
+                        <td>${acc.date}</td>
+                        <td>${acc.notes || '-'}</td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            return html;
+        }
+        
+        function generateMonthlyReport() {
+            const monthlyData = {};
+            
+            accounts.forEach(acc => {
+                const month = acc.date.substring(0, 7); // YYYY-MM
+                if (!monthlyData[month]) {
+                    monthlyData[month] = { income: 0, expense: 0 };
+                }
+                if (acc.type === 'income') {
+                    monthlyData[month].income += acc.amount;
+                } else {
+                    monthlyData[month].expense += acc.amount;
+                }
+            });
+            
+            let html = `
+                <div class="report-card">
+                    <h3>التقرير الشهري</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>الشهر</th>
+                                <th>الدخل</th>
+                                <th>المصروفات</th>
+                                <th>الرصيد</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            Object.keys(monthlyData).sort().reverse().forEach(month => {
+                const data = monthlyData[month];
+                const balance = data.income - data.expense;
+                html += `
+                    <tr>
+                        <td>${month}</td>
+                        <td style="color: #4caf50">${data.income.toLocaleString()}</td>
+                        <td style="color: #f44336">${data.expense.toLocaleString()}</td>
+                        <td>${balance.toLocaleString()}</td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            return html;
+        }
+        
+        function generateCategoriesReport() {
+            const categoryData = {};
+            
+            accounts.forEach(acc => {
+                if (!categoryData[acc.category]) {
+                    categoryData[acc.category] = { income: 0, expense: 0 };
+                }
+                if (acc.type === 'income') {
+                    categoryData[acc.category].income += acc.amount;
+                } else {
+                    categoryData[acc.category].expense += acc.amount;
+                }
+            });
+            
+            let html = `
+                <div class="report-card">
+                    <h3>تقرير التصنيفات</h3>
+                    <div class="stat-grid">
+            `;
+            
+            Object.keys(categoryData).forEach(category => {
+                const data = categoryData[category];
+                const total = data.income - data.expense;
+                html += `
+                    <div class="stat-item">
+                        <div class="label">${category}</div>
+                        <div class="value">${total.toLocaleString()}</div>
+                        <div style="font-size: 12px; color: #757575">
+                            دخل: ${data.income} | مصروف: ${data.expense}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                    </div>
+                </div>
+            `;
+            
+            return html;
+        }
+        
+        function generateMovementsReport() {
+            let html = `
+                <div class="report-card">
+                    <h3>حركة الحسابات</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>التاريخ</th>
+                                <th>الحساب</th>
+                                <th>مدين</th>
+                                <th>دائن</th>
+                                <th>الرصيد</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            let balance = 0;
+            const sortedAccounts = [...accounts].sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            sortedAccounts.forEach(acc => {
+                if (acc.type === 'income') {
+                    balance += acc.amount;
+                } else {
+                    balance -= acc.amount;
+                }
+                
+                html += `
+                    <tr>
+                        <td>${acc.date}</td>
+                        <td>${acc.name}</td>
+                        <td>${acc.type === 'expense' ? acc.amount.toLocaleString() : '-'}</td>
+                        <td>${acc.type === 'income' ? acc.amount.toLocaleString() : '-'}</td>
+                        <td>${balance.toLocaleString()}</td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            return html;
+        }
+        
+        function exportReport() {
+            const content = document.getElementById('report-content').innerText;
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `report_${new Date().toISOString().split('T')[0]}.txt`;
+            link.click();
+        }
+        
+        // توليد التقرير عند التحميل
+        window.onload = function() {
+            loadData();
+            generateReport();
+        };
+    </script>
+</body>
+</html>

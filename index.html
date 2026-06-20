@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاسب - تطبيق الحسابات اليومية</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- القائمة الجانبية -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-wallet"></i> المحاسب</h2>
+            <button class="close-btn" onclick="toggleSidebar()">×</button>
+        </div>
+        <ul class="menu">
+            <li onclick="addAmount()"><i class="fas fa-plus-circle"></i> إضافة مبلغ</li>
+            <li onclick="navigateTo('reports/reports.html')"><i class="fas fa-chart-bar"></i> تقرير- إجمالي المبالغ</li>
+            <li onclick="navigateTo('reports/reports.html')"><i class="fas fa-list"></i> تقرير- تفاصيل كل المبالغ</li>
+            <li onclick="navigateTo('reports/reports.html')"><i class="fas fa-calendar-alt"></i> تقرير- إجمالي المبالغ شهرياً</li>
+            <li onclick="navigateTo('reports/reports.html')"><i class="fas fa-tags"></i> تقرير- إجمالي التصنيفات</li>
+            <li onclick="navigateTo('reports/reports.html')"><i class="fas fa-exchange-alt"></i> تقرير- حركة الحسابات</li>
+            <li onclick="showAutoRepeat()"><i class="fas fa-sync-alt"></i> التكرار التلقائي</li>
+            <li onclick="backupData()"><i class="fas fa-upload"></i> حفظ نسخة إحتياطية</li>
+            <li onclick="restoreData()"><i class="fas fa-download"></i> إسترجاع قاعدة البيانات</li>
+            <li onclick="syncWithGoogleDrive()"><i class="fab fa-google-drive"></i> جوجل درايف</li>
+            <li onclick="navigateTo('settings/settings.html')"><i class="fas fa-cog"></i> إعدادات</li>
+            <li onclick="showContactSupport()"><i class="fas fa-phone"></i> للتواصل والدعم</li>
+            <li onclick="showAbout()"><i class="fas fa-question-circle"></i> حول البرنامج</li>
+            <li onclick="shareApp()"><i class="fas fa-share-alt"></i> مشاركة البرنامج</li>
+            <li onclick="logout()"><i class="fas fa-sign-out-alt"></i> خروج</li>
+        </ul>
+    </div>
+
+    <!-- الرأس -->
+    <header class="header">
+        <button class="menu-btn" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <h1>عام</h1>
+        <div class="header-actions">
+            <button onclick="showSearch()"><i class="fas fa-search"></i></button>
+            <button onclick="showNotifications()"><i class="fas fa-bell"></i></button>
+            <button onclick="toggleSidebar()"><i class="fas fa-list"></i></button>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="main-content">
+        <div id="accounts-list" class="accounts-list">
+            <!-- سيتم ملؤها ديناميكياً -->
+        </div>
+    </main>
+
+    <!-- الشريط السفلي -->
+    <div class="bottom-bar">
+        <button class="help-btn"><i class="fas fa-question"></i></button>
+        <div class="summary">
+            <span id="total-owed">عليك: 0</span>
+            <span id="total-own">لك: 0</span>
+        </div>
+        <button class="add-btn" onclick="addNewAccount()">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+
+    <!-- نافذة إضافة/تعديل حساب -->
+    <div id="account-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">إضافة حساب جديد</h3>
+                <button class="close-modal" onclick="closeModal()">×</button>
+            </div>
+            <form id="account-form">
+                <div class="form-group">
+                    <label>الاسم</label>
+                    <input type="text" id="account-name" required>
+                </div>
+                <div class="form-group">
+                    <label>المبلغ</label>
+                    <input type="number" id="account-amount" required>
+                </div>
+                <div class="form-group">
+                    <label>النوع</label>
+                    <select id="account-type">
+                        <option value="expense">مصروف (عليك)</option>
+                        <option value="income">دخل (لك)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>التصنيف</label>
+                    <select id="account-category">
+                        <option value="personal">شخصي</option>
+                        <option value="food">طعام</option>
+                        <option value="transport">مواصلات</option>
+                        <option value="shopping">تسوق</option>
+                        <option value="bills">فواتير</option>
+                        <option value="other">أخرى</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>التاريخ</label>
+                    <input type="date" id="account-date" required>
+                </div>
+                <div class="form-group">
+                    <label>ملاحظات</label>
+                    <textarea id="account-notes" rows="3"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal()">إلغاء</button>
+                    <button type="submit" class="btn-save">حفظ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
