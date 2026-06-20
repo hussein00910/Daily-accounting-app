@@ -1,0 +1,19 @@
+{
+  "name": "daily-accounting-app",
+  "version": "1.0.0",
+  "description": "تطبيق المحاسب - Daily Accounting App",
+  "scripts": {
+    "build": "rm -rf www && mkdir -p www && cp -r index.html css js reports settings www/",
+    "android:sync": "npm run build && npx cap sync android"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@capacitor/android": "^8.4.1",
+    "@capacitor/core": "^8.4.1",
+    "@capacitor/filesystem": "^8.1.2",
+    "@capacitor/share": "^8.0.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.4.1"
+  }
+}

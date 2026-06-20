@@ -1,0 +1,82 @@
+name: Build and Validate
+
+on:
+  push:
+    branches:
+      - main
+      - 'claude/**'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate JavaScript syntax
+        run: |
+          set -e
+          find . -name "*.js" -not -path "./node_modules/*" -not -path "./android/*" -print0 \
+            | xargs -0 -n1 node --check
+
+      - name: Validate HTML
+        run: npx --yes htmlhint index.html reports/reports.html settings/settings.html
+
+      - name: Upload web artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-accounting-app-web
+          path: |
+            index.html
+            css
+            js
+            reports
+            settings
+            README.md
+
+  android-build:
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web assets
+        run: npm run build
+
+      - name: Sync Capacitor Android project
+        run: npx cap sync android
+
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug --no-daemon
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-accounting-app-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
