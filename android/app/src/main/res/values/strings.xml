@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">المحاسب</string>
+    <string name="title_activity_main">المحاسب</string>
+    <string name="package_name">com.dailyaccounting.app</string>
+    <string name="custom_url_scheme">com.dailyaccounting.app</string>
+</resources>
