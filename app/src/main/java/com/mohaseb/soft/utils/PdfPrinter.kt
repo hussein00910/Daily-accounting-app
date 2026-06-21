@@ -74,7 +74,7 @@ object PdfPrinter {
         val pageInfo = PdfDocument.PageInfo.Builder(PAGE_WIDTH, PAGE_HEIGHT, 1).create()
         var page = document.startPage(pageInfo)
         var canvas: Canvas = page.canvas
-        var y: Float
+        var y: Float = 0f
         val right = PAGE_WIDTH - MARGIN
         val nameRight = right
         val qtyRight = right - 230f
@@ -148,7 +148,7 @@ object PdfPrinter {
         val pageInfo = PdfDocument.PageInfo.Builder(PAGE_WIDTH, PAGE_HEIGHT, 1).create()
         var page = document.startPage(pageInfo)
         var canvas: Canvas = page.canvas
-        var y: Float
+        var y: Float = 0f
         val right = PAGE_WIDTH - MARGIN
         val dateRight = right
         val typeRight = right - 150f
