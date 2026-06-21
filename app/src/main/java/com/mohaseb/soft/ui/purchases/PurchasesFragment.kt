@@ -20,6 +20,8 @@ import com.mohaseb.soft.databinding.DialogAddTransactionBinding
 import com.mohaseb.soft.databinding.FragmentPurchasesBinding
 import com.mohaseb.soft.databinding.ItemInvoiceLineBinding
 import com.mohaseb.soft.ui.adapters.TransactionAdapter
+import com.mohaseb.soft.utils.PdfPrinter
+import java.util.Date
 import java.util.Locale
 
 class PurchasesFragment : Fragment() {
@@ -129,37 +131,66 @@ class PurchasesFragment : Fragment() {
             updateLineTotal(lineBinding)
         }
 
+        fun savePurchase(thenPrint: Boolean) {
+            val accountPos = dialogBinding.spinnerAccount.selectedItemPosition
+            if (accountPos < 0) return
+            val supplierPos = dialogBinding.spinnerCustomer.selectedItemPosition
+            val supplierId = if (supplierPos > 0) suppliers[supplierPos - 1].id else null
+            val supplierName = if (supplierPos > 0) suppliers[supplierPos - 1].name else getString(R.string.none)
+
+            val lines = lineBindings.mapNotNull { line ->
+                val itemPos = line.spinnerItem.selectedItemPosition
+                if (itemPos < 0) return@mapNotNull null
+                InvoiceLine(
+                    itemId = items[itemPos].id,
+                    quantity = line.etQuantity.text.toString().toDoubleOrNull() ?: 1.0,
+                    price = line.etPrice.text.toString().toDoubleOrNull() ?: 0.0
+                )
+            }
+            if (lines.isEmpty()) return
+            val isCredit = dialogBinding.switchCredit.isChecked
+            val notes = dialogBinding.etNotes.text.toString()
+
+            viewModel.addPurchase(
+                accountId = accounts[accountPos].id,
+                lines = lines,
+                supplierId = supplierId,
+                isCredit = isCredit,
+                notes = notes
+            )
+
+            if (thenPrint) {
+                val itemsById = items.associateBy { it.id }
+                val pdfLines = lines.map { line ->
+                    PdfPrinter.InvoiceLineData(
+                        name = itemsById[line.itemId]?.name.orEmpty(),
+                        quantity = line.quantity,
+                        price = line.price
+                    )
+                }
+                val document = PdfPrinter.buildInvoicePdf(
+                    companyName = getString(R.string.app_name),
+                    invoiceTitle = getString(R.string.invoice_purchase_title),
+                    invoiceDate = Date(),
+                    partyLabel = getString(R.string.supplier),
+                    partyName = supplierName,
+                    paymentTypeLabel = if (isCredit) getString(R.string.credit_switch) else getString(R.string.cash_payment),
+                    notes = notes,
+                    lines = pdfLines,
+                    total = pdfLines.sumOf { it.total }
+                )
+                PdfPrinter.print(requireContext(), getString(R.string.invoice_purchase_title), document)
+            }
+        }
+
         addLine()
         dialogBinding.btnAddLine.setOnClickListener { addLine() }
 
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.add_purchase)
             .setView(dialogBinding.root)
-            .setPositiveButton(R.string.save) { _, _ ->
-                val accountPos = dialogBinding.spinnerAccount.selectedItemPosition
-                if (accountPos < 0) return@setPositiveButton
-                val supplierPos = dialogBinding.spinnerCustomer.selectedItemPosition
-                val supplierId = if (supplierPos > 0) suppliers[supplierPos - 1].id else null
-
-                val lines = lineBindings.mapNotNull { line ->
-                    val itemPos = line.spinnerItem.selectedItemPosition
-                    if (itemPos < 0) return@mapNotNull null
-                    InvoiceLine(
-                        itemId = items[itemPos].id,
-                        quantity = line.etQuantity.text.toString().toDoubleOrNull() ?: 1.0,
-                        price = line.etPrice.text.toString().toDoubleOrNull() ?: 0.0
-                    )
-                }
-                if (lines.isEmpty()) return@setPositiveButton
-
-                viewModel.addPurchase(
-                    accountId = accounts[accountPos].id,
-                    lines = lines,
-                    supplierId = supplierId,
-                    isCredit = dialogBinding.switchCredit.isChecked,
-                    notes = dialogBinding.etNotes.text.toString()
-                )
-            }
+            .setPositiveButton(R.string.save) { _, _ -> savePurchase(thenPrint = false) }
+            .setNeutralButton(R.string.print) { _, _ -> savePurchase(thenPrint = true) }
             .setNegativeButton(R.string.cancel, null)
             .show()
     }

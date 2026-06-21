@@ -10,6 +10,7 @@ import java.util.Locale
 
 class ItemAdapter(
     private var items: List<Item>,
+    private val showPrice: Boolean = false,
     private val onClick: (Item) -> Unit = {},
     private val onLongClick: (Item) -> Unit = {}
 ) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
@@ -38,11 +39,21 @@ class ItemAdapter(
             val lowStock = item.quantity <= item.minQuantity
 
             binding.tvTitle.text = item.name
-            binding.tvSubtitle.text = item.unit
-            binding.tvTrailing.text = String.format(Locale.US, "%.2f", item.quantity)
-            binding.tvTrailing.setTextColor(
-                context.getColor(if (lowStock) R.color.debit_color else R.color.text_primary)
-            )
+            if (showPrice) {
+                binding.tvSubtitle.text = "${context.getString(R.string.quantity)}: " +
+                    "${String.format(Locale.US, "%.2f", item.quantity)} ${item.unit}"
+                binding.tvSubtitle.setTextColor(
+                    context.getColor(if (lowStock) R.color.debit_color else R.color.text_secondary)
+                )
+                binding.tvTrailing.text = String.format(Locale.US, "%.2f", item.salePrice)
+                binding.tvTrailing.setTextColor(context.getColor(R.color.primary))
+            } else {
+                binding.tvSubtitle.text = item.unit
+                binding.tvTrailing.text = String.format(Locale.US, "%.2f", item.quantity)
+                binding.tvTrailing.setTextColor(
+                    context.getColor(if (lowStock) R.color.debit_color else R.color.text_primary)
+                )
+            }
 
             binding.root.setOnClickListener { onClick(item) }
             binding.root.setOnLongClickListener { onLongClick(item); true }

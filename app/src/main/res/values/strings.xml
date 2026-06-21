@@ -65,6 +65,7 @@
     <string name="add">إضافة</string>
     <string name="save">حفظ</string>
     <string name="cancel">إلغاء</string>
+    <string name="print">طباعة</string>
     <string name="delete">حذف</string>
     <string name="edit">تعديل</string>
     <string name="search">بحث</string>
@@ -122,6 +123,8 @@
     <!-- Sales / Purchases / Cash dialogs -->
     <string name="add_sale">إضافة فاتورة بيع</string>
     <string name="add_purchase">إضافة فاتورة شراء</string>
+    <string name="invoice_sale_title">فاتورة بيع</string>
+    <string name="invoice_purchase_title">فاتورة شراء</string>
     <string name="add_receipt">سند قبض</string>
     <string name="add_payment">سند دفع</string>
     <string name="select_account">اختر الحساب</string>
@@ -139,6 +142,7 @@
     <string name="cash_in">قبض</string>
     <string name="cash_out">دفع</string>
     <string name="credit_switch">آجل</string>
+    <string name="cash_payment">نقدي</string>
 
     <!-- Warehouse -->
     <string name="low_stock_warning">كمية منخفضة</string>

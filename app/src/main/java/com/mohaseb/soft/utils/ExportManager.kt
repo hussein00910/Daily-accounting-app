@@ -1,6 +1,7 @@
 package com.mohaseb.soft.utils
 
 import android.content.Context
+import com.mohaseb.soft.R
 import com.mohaseb.soft.data.entity.Account
 import com.mohaseb.soft.data.entity.Customer
 import com.mohaseb.soft.data.entity.Item
@@ -29,20 +30,23 @@ class ExportManager(private val context: Context) {
         return file.absolutePath
     }
 
-    // A real PDF would use a library such as iText; this writes a plain-text report instead.
     fun exportToPDF(transactions: List<Transaction>, fileName: String): String {
-        val exportDir = File(context.getExternalFilesDir(null), Constants.EXPORT_FOLDER)
-        if (!exportDir.exists()) exportDir.mkdirs()
+        val document = PdfPrinter.buildReportPdf(
+            title = "تقرير الحركات",
+            transactions = transactions,
+            typeLabel = ::transactionTypeLabel
+        )
+        return PdfPrinter.saveToFile(document, context, fileName)
+    }
 
-        val file = File(exportDir, "$fileName.txt")
-        val sb = StringBuilder()
-        sb.append("تقرير الحركات\n")
-        sb.append("================\n\n")
-        transactions.forEach { t ->
-            sb.append("${dateFormat.format(Date(t.date))} | ${t.type} | ${t.amount}\n")
-        }
-        file.writeText(sb.toString())
-        return file.absolutePath
+    private fun transactionTypeLabel(t: Transaction): String = when (t.type) {
+        Constants.TYPE_CASH_IN -> context.getString(R.string.cash_in)
+        Constants.TYPE_CASH_OUT -> context.getString(R.string.cash_out)
+        Constants.TYPE_SALE ->
+            context.getString(if (t.isCredit) R.string.credit_sale else R.string.cash_sale)
+        Constants.TYPE_PURCHASE ->
+            context.getString(if (t.isCredit) R.string.credit_purchase else R.string.cash_purchase)
+        else -> t.type
     }
 
     // Distinct from exportToCSV/exportToPDF above (transactions only, for the Reports screen):

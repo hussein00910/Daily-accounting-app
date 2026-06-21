@@ -35,7 +35,7 @@ class ItemsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = ItemAdapter(emptyList(), onClick = { showItemDialog(it) })
+        adapter = ItemAdapter(emptyList(), showPrice = true, onClick = { showItemDialog(it) })
         binding.rvList.layoutManager = LinearLayoutManager(requireContext())
         binding.rvList.adapter = adapter
         binding.fabAdd.setOnClickListener { showItemDialog(null) }
