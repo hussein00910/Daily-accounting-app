@@ -21,6 +21,7 @@ import com.mohaseb.soft.databinding.FragmentSalesBinding
 import com.mohaseb.soft.databinding.ItemInvoiceLineBinding
 import com.mohaseb.soft.ui.adapters.TransactionAdapter
 import com.mohaseb.soft.utils.PdfPrinter
+import com.google.android.material.snackbar.Snackbar
 import java.util.Date
 import java.util.Locale
 
@@ -61,7 +62,10 @@ class SalesFragment : Fragment() {
     }
 
     private fun showAddSaleDialog() {
-        if (accounts.isEmpty() || items.isEmpty()) return
+        if (accounts.isEmpty() || items.isEmpty()) {
+            Snackbar.make(binding.root, R.string.need_account_and_item, Snackbar.LENGTH_LONG).show()
+            return
+        }
         val dialogBinding = DialogAddTransactionBinding.inflate(layoutInflater)
         val lineBindings = mutableListOf<ItemInvoiceLineBinding>()
 

@@ -123,6 +123,7 @@
     <!-- Sales / Purchases / Cash dialogs -->
     <string name="add_sale">إضافة فاتورة بيع</string>
     <string name="add_purchase">إضافة فاتورة شراء</string>
+    <string name="need_account_and_item">يجب إضافة حساب وصنف واحد على الأقل أولاً (من شاشتي الحسابات والأصناف)</string>
     <string name="invoice_sale_title">فاتورة بيع</string>
     <string name="invoice_purchase_title">فاتورة شراء</string>
     <string name="add_receipt">سند قبض</string>
