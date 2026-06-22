@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.mohaseb.soft.ui.home.HomeFragment"
+        android:label="@string/home"
+        tools:layout="@layout/fragment_home">
+        <action android:id="@+id/action_home_to_sales" app:destination="@id/salesFragment" />
+        <action android:id="@+id/action_home_to_purchases" app:destination="@id/purchasesFragment" />
+        <action android:id="@+id/action_home_to_cash" app:destination="@id/cashFragment" />
+        <action android:id="@+id/action_home_to_warehouse" app:destination="@id/warehouseFragment" />
+        <action android:id="@+id/action_home_to_accounts" app:destination="@id/accountsFragment" />
+        <action android:id="@+id/action_home_to_items" app:destination="@id/itemsFragment" />
+        <action android:id="@+id/action_home_to_reports" app:destination="@id/reportsFragment" />
+        <action android:id="@+id/action_home_to_settings" app:destination="@id/settingsFragment" />
+        <action android:id="@+id/action_home_to_currencies" app:destination="@id/currenciesFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/salesFragment"
+        android:name="com.mohaseb.soft.ui.sales.SalesFragment"
+        android:label="@string/sales"
+        tools:layout="@layout/fragment_sales" />
+
+    <fragment
+        android:id="@+id/purchasesFragment"
+        android:name="com.mohaseb.soft.ui.purchases.PurchasesFragment"
+        android:label="@string/purchases"
+        tools:layout="@layout/fragment_purchases" />
+
+    <fragment
+        android:id="@+id/cashFragment"
+        android:name="com.mohaseb.soft.ui.cash.CashFragment"
+        android:label="@string/cash"
+        tools:layout="@layout/fragment_cash" />
+
+    <fragment
+        android:id="@+id/warehouseFragment"
+        android:name="com.mohaseb.soft.ui.warehouse.WarehouseFragment"
+        android:label="@string/warehouse"
+        tools:layout="@layout/fragment_warehouse" />
+
+    <fragment
+        android:id="@+id/accountsFragment"
+        android:name="com.mohaseb.soft.ui.accounts.AccountsFragment"
+        android:label="@string/accounts"
+        tools:layout="@layout/fragment_accounts" />
+
+    <fragment
+        android:id="@+id/itemsFragment"
+        android:name="com.mohaseb.soft.ui.items.ItemsFragment"
+        android:label="@string/items"
+        tools:layout="@layout/fragment_items" />
+
+    <fragment
+        android:id="@+id/reportsFragment"
+        android:name="com.mohaseb.soft.ui.reports.ReportsFragment"
+        android:label="@string/reports"
+        tools:layout="@layout/fragment_reports" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.mohaseb.soft.ui.settings.SettingsFragment"
+        android:label="@string/settings"
+        tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/currenciesFragment"
+        android:name="com.mohaseb.soft.ui.currencies.CurrenciesFragment"
+        android:label="@string/currencies"
+        tools:layout="@layout/fragment_currencies" />
+
+</navigation>
