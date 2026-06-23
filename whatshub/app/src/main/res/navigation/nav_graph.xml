@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/splashFragment">
+
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.whatshub.ui.splash.SplashFragment"
+        android:label="Splash"
+        tools:layout="@layout/fragment_splash" />
+
+    <fragment
+        android:id="@+id/phoneEntryFragment"
+        android:name="com.whatshub.ui.auth.phone.PhoneEntryFragment"
+        android:label="@string/phone_entry_title"
+        tools:layout="@layout/fragment_phone_entry" />
+
+    <fragment
+        android:id="@+id/otpVerifyFragment"
+        android:name="com.whatshub.ui.auth.otp.OtpVerifyFragment"
+        android:label="@string/otp_title"
+        tools:layout="@layout/fragment_otp_verify">
+        <argument
+            android:name="phoneNumber"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/profileSetupFragment"
+        android:name="com.whatshub.ui.auth.profile_setup.ProfileSetupFragment"
+        android:label="@string/profile_setup_title"
+        tools:layout="@layout/fragment_profile_setup" />
+
+    <fragment
+        android:id="@+id/chatListFragment"
+        android:name="com.whatshub.ui.chatlist.ChatListFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_chat_list" />
+
+    <fragment
+        android:id="@+id/updatesFragment"
+        android:name="com.whatshub.ui.comingsoon.ComingSoonFragment"
+        android:label="@string/nav_updates"
+        tools:layout="@layout/fragment_coming_soon">
+        <argument
+            android:name="titleRes"
+            app:argType="reference"
+            android:defaultValue="@string/nav_updates" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/communitiesFragment"
+        android:name="com.whatshub.ui.comingsoon.ComingSoonFragment"
+        android:label="@string/nav_communities"
+        tools:layout="@layout/fragment_coming_soon">
+        <argument
+            android:name="titleRes"
+            app:argType="reference"
+            android:defaultValue="@string/nav_communities" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/callsFragment"
+        android:name="com.whatshub.ui.comingsoon.ComingSoonFragment"
+        android:label="@string/nav_calls"
+        tools:layout="@layout/fragment_coming_soon">
+        <argument
+            android:name="titleRes"
+            app:argType="reference"
+            android:defaultValue="@string/nav_calls" />
+    </fragment>
+
+</navigation>

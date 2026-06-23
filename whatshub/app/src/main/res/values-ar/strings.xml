@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">Whatshub</string>
+
+    <!-- Splash -->
+    <string name="splash_tagline">مراسلة بسيطة وآمنة وموثوقة</string>
+
+    <!-- Phone entry -->
+    <string name="phone_entry_title">أدخل رقم هاتفك</string>
+    <string name="phone_entry_subtitle">سيرسل Whatshub رمز تحقق إلى هذا الرقم</string>
+    <string name="phone_entry_hint">رقم الهاتف</string>
+    <string name="phone_entry_country_code_hint">رمز الدولة</string>
+    <string name="action_continue">استمرار</string>
+    <string name="error_invalid_phone">أدخل رقم هاتف صحيح</string>
+
+    <!-- OTP -->
+    <string name="otp_title">تحقق من رقمك</string>
+    <string name="otp_subtitle">أدخل الرمز المكوّن من 6 أرقام المُرسل إلى %1$s</string>
+    <string name="action_verify">تحقق</string>
+    <string name="action_resend_code">إعادة إرسال الرمز</string>
+    <string name="resend_code_in">إعادة الإرسال بعد %1$d ثانية</string>
+    <string name="error_invalid_otp">أدخل الرمز المكوّن من 6 أرقام</string>
+    <string name="error_otp_failed">رمز غير صحيح، حاول مرة أخرى</string>
+
+    <!-- Profile setup -->
+    <string name="profile_setup_title">معلومات الملف الشخصي</string>
+    <string name="profile_setup_subtitle">أضف اسمك وصورة اختيارية</string>
+    <string name="profile_setup_name_hint">اسمك</string>
+    <string name="action_done">تم</string>
+    <string name="action_change_photo">تغيير الصورة</string>
+    <string name="error_invalid_name">أدخل اسمك</string>
+
+    <!-- Chat list -->
+    <string name="chat_list_search_hint">بحث</string>
+    <string name="filter_all">الكل</string>
+    <string name="filter_unread">غير مقروءة</string>
+    <string name="filter_favorites">المفضلة</string>
+    <string name="filter_groups">المجموعات</string>
+    <string name="empty_chat_list">لا توجد محادثات بعد. اضغط الزر أدناه لبدء محادثة.</string>
+
+    <!-- Bottom nav -->
+    <string name="nav_chats">الدردشات</string>
+    <string name="nav_updates">التحديثات</string>
+    <string name="nav_communities">المجتمعات</string>
+    <string name="nav_calls">المكالمات</string>
+
+    <!-- Coming soon -->
+    <string name="coming_soon_title">قريباً</string>
+    <string name="coming_soon_message">هذه الميزة قيد التطوير.</string>
+
+    <!-- Chat -->
+    <string name="message_input_hint">رسالة</string>
+    <string name="action_send">إرسال</string>
+    <string name="action_attach">إرفاق</string>
+    <string name="action_record_voice">تسجيل رسالة صوتية</string>
+
+    <!-- New chat -->
+    <string name="new_chat_title">محادثة جديدة</string>
+    <string name="new_chat_search_hint">بحث بالاسم أو رقم الهاتف</string>
+
+    <!-- Generic -->
+    <string name="action_cancel">إلغاء</string>
+    <string name="action_retry">إعادة المحاولة</string>
+    <string name="error_generic">حدث خطأ ما. حاول مرة أخرى.</string>
+    <string name="error_network">لا يوجد اتصال بالإنترنت</string>
+</resources>

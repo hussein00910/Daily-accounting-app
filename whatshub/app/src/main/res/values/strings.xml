@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">Whatshub</string>
+
+    <!-- Splash -->
+    <string name="splash_tagline">Simple. Secure. Reliable messaging.</string>
+
+    <!-- Phone entry -->
+    <string name="phone_entry_title">Enter your phone number</string>
+    <string name="phone_entry_subtitle">Whatshub will send a verification code to this number.</string>
+    <string name="phone_entry_hint">Phone number</string>
+    <string name="phone_entry_country_code_hint">Country code</string>
+    <string name="action_continue">Continue</string>
+    <string name="error_invalid_phone">Enter a valid phone number</string>
+
+    <!-- OTP -->
+    <string name="otp_title">Verify your number</string>
+    <string name="otp_subtitle">Enter the 6-digit code sent to %1$s</string>
+    <string name="action_verify">Verify</string>
+    <string name="action_resend_code">Resend code</string>
+    <string name="resend_code_in">Resend code in %1$ds</string>
+    <string name="error_invalid_otp">Enter the 6-digit code</string>
+    <string name="error_otp_failed">Incorrect code, please try again</string>
+
+    <!-- Profile setup -->
+    <string name="profile_setup_title">Profile info</string>
+    <string name="profile_setup_subtitle">Set your name and an optional photo</string>
+    <string name="profile_setup_name_hint">Your name</string>
+    <string name="action_done">Done</string>
+    <string name="action_change_photo">Change photo</string>
+    <string name="error_invalid_name">Enter your name</string>
+
+    <!-- Chat list -->
+    <string name="chat_list_search_hint">Search</string>
+    <string name="filter_all">All</string>
+    <string name="filter_unread">Unread</string>
+    <string name="filter_favorites">Favorites</string>
+    <string name="filter_groups">Groups</string>
+    <string name="empty_chat_list">No chats yet. Tap the button below to start one.</string>
+
+    <!-- Bottom nav -->
+    <string name="nav_chats">Chats</string>
+    <string name="nav_updates">Updates</string>
+    <string name="nav_communities">Communities</string>
+    <string name="nav_calls">Calls</string>
+
+    <!-- Coming soon -->
+    <string name="coming_soon_title">Coming soon</string>
+    <string name="coming_soon_message">This feature is on the way.</string>
+
+    <!-- Chat -->
+    <string name="message_input_hint">Message</string>
+    <string name="action_send">Send</string>
+    <string name="action_attach">Attach</string>
+    <string name="action_record_voice">Record voice message</string>
+
+    <!-- New chat -->
+    <string name="new_chat_title">New chat</string>
+    <string name="new_chat_search_hint">Search by name or phone number</string>
+
+    <!-- Generic -->
+    <string name="action_cancel">Cancel</string>
+    <string name="action_retry">Retry</string>
+    <string name="error_generic">Something went wrong. Please try again.</string>
+    <string name="error_network">No internet connection</string>
+</resources>
