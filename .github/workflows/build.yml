@@ -33,39 +33,83 @@ jobs:
           key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
 
       - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+        run: |
+          chmod +x gradlew
+          chmod +x whatshub/gradlew
 
-      - name: Build
+      - name: Build Mohaseb Soft
         run: ./gradlew build --no-daemon
 
-      - name: Run tests
+      - name: Run Mohaseb Soft tests
         run: ./gradlew test --no-daemon
 
-      - name: Assemble debug APK
+      - name: Assemble Mohaseb Soft debug APK
         run: ./gradlew assembleDebug --no-daemon
 
-      - name: Assemble release APK
+      - name: Assemble Mohaseb Soft release APK
         run: ./gradlew assembleRelease --no-daemon
 
-      - name: Upload debug APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-debug
-          path: app/build/outputs/apk/debug/*.apk
+      - name: Write Whatshub local.properties
+        working-directory: whatshub
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          printf 'SUPABASE_URL=%s\nSUPABASE_ANON_KEY=%s\n' "$SUPABASE_URL" "$SUPABASE_ANON_KEY" > local.properties
 
-      - name: Upload release APK
+      - name: Build Whatshub
+        working-directory: whatshub
+        run: ./gradlew build --no-daemon
+
+      - name: Run Whatshub tests
+        working-directory: whatshub
+        run: ./gradlew test --no-daemon
+
+      - name: Assemble Whatshub debug APK
+        working-directory: whatshub
+        run: ./gradlew assembleDebug --no-daemon
+
+      - name: Assemble Whatshub release APK
+        working-directory: whatshub
+        run: ./gradlew assembleRelease --no-daemon
+
+      - name: Collect APKs
+        run: |
+          mkdir -p dist
+          cp app/build/outputs/apk/debug/*.apk dist/mohaseb-soft-debug.apk
+          cp app/build/outputs/apk/release/*.apk dist/mohaseb-soft-release.apk
+          cp whatshub/app/build/outputs/apk/debug/*.apk dist/whatshub-debug.apk
+          cp whatshub/app/build/outputs/apk/release/*.apk dist/whatshub-release.apk
+
+      - name: Upload Mohaseb Soft debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-release
-          path: app/build/outputs/apk/release/*.apk
+          name: mohaseb-soft-debug
+          path: dist/mohaseb-soft-debug.apk
+
+      - name: Upload Mohaseb Soft release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: mohaseb-soft-release
+          path: dist/mohaseb-soft-release.apk
+
+      - name: Upload Whatshub debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: whatshub-debug
+          path: dist/whatshub-debug.apk
+
+      - name: Upload Whatshub release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: whatshub-release
+          path: dist/whatshub-release.apk
 
       - name: Create release
         if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ github.run_number }}
-          files: |
-            app/build/outputs/apk/debug/*.apk
-            app/build/outputs/apk/release/*.apk
+          files: dist/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
