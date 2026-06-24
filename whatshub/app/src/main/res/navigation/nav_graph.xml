@@ -37,7 +37,42 @@
         android:id="@+id/chatListFragment"
         android:name="com.whatshub.ui.chatlist.ChatListFragment"
         android:label="@string/app_name"
-        tools:layout="@layout/fragment_chat_list" />
+        tools:layout="@layout/fragment_chat_list">
+        <action
+            android:id="@+id/action_chatListFragment_to_newChatFragment"
+            app:destination="@id/newChatFragment" />
+        <action
+            android:id="@+id/action_chatListFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/newChatFragment"
+        android:name="com.whatshub.ui.newchat.NewChatFragment"
+        android:label="@string/new_chat_title"
+        tools:layout="@layout/fragment_new_chat">
+        <action
+            android:id="@+id/action_newChatFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.whatshub.ui.chat.ChatFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_chat">
+        <argument android:name="chatId" app:argType="string" />
+        <argument
+            android:name="otherUserName"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <argument
+            android:name="otherUserAvatarUrl"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
 
     <fragment
         android:id="@+id/updatesFragment"

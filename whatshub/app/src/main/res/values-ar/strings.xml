@@ -52,6 +52,9 @@
     <string name="action_send">إرسال</string>
     <string name="action_attach">إرفاق</string>
     <string name="action_record_voice">تسجيل رسالة صوتية</string>
+    <string name="typing_indicator">يكتب الآن…</string>
+    <string name="message_send_failed">فشل إرسال الرسالة</string>
+    <string name="action_retry_send">إعادة المحاولة</string>
 
     <!-- New chat -->
     <string name="new_chat_title">محادثة جديدة</string>
